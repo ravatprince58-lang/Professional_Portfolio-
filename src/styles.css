@@ -1,0 +1,206 @@
+@import "tailwindcss" source(none);
+@source "../src";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+/*
+ * Design system — "Classic Sketchbook"
+ *
+ * Warm cream paper, sepia ballpoint ink, graphite pencil accents.
+ * Headings: Bebas Neue. Body: Barlow. Margin notes: Caveat.
+ */
+
+@theme {
+  --font-display: "Bebas Neue", "Barlow", ui-sans-serif, sans-serif;
+  --font-sans: "Barlow", ui-sans-serif, system-ui, sans-serif;
+  --font-hand: "Caveat", "Segoe Script", cursive;
+}
+
+@theme inline {
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --radius-2xl: calc(var(--radius) + 8px);
+  --radius-3xl: calc(var(--radius) + 12px);
+  --radius-4xl: calc(var(--radius) + 16px);
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-paper: var(--paper);
+  --color-pencil: var(--pencil);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+}
+
+:root {
+  --radius: 0.625rem;
+  /* warm cream paper #f5f0e4 */
+  --background: oklch(0.948 0.018 92);
+  /* dark coffee ink #4a3728 */
+  --foreground: oklch(0.32 0.035 58);
+  /* lighter sheet of paper */
+  --paper: oklch(0.962 0.014 92);
+  /* faded graphite pencil */
+  --pencil: oklch(0.55 0.035 68);
+  --card: oklch(0.962 0.014 92);
+  --card-foreground: oklch(0.32 0.035 58);
+  --popover: oklch(0.962 0.014 92);
+  --popover-foreground: oklch(0.32 0.035 58);
+  /* sepia ballpoint ink #8b5e34 */
+  --primary: oklch(0.498 0.078 66);
+  --primary-foreground: oklch(0.962 0.014 92);
+  /* second sheet #efe8d8 */
+  --secondary: oklch(0.925 0.022 88);
+  --secondary-foreground: oklch(0.36 0.04 58);
+  --muted: oklch(0.925 0.022 88);
+  --muted-foreground: oklch(0.47 0.05 62);
+  /* warm ember highlight for tape & marks */
+  --accent: oklch(0.72 0.09 58);
+  --accent-foreground: oklch(0.32 0.035 58);
+  --destructive: oklch(0.577 0.245 27.325);
+  --destructive-foreground: oklch(0.984 0.003 247.858);
+  --border: oklch(0.498 0.078 66 / 30%);
+  --input: oklch(0.498 0.078 66 / 25%);
+  --ring: oklch(0.498 0.078 66 / 50%);
+  --chart-1: oklch(0.498 0.078 66);
+  --chart-2: oklch(0.72 0.09 58);
+  --chart-3: oklch(0.55 0.035 68);
+  --chart-4: oklch(0.63 0.09 80);
+  --chart-5: oklch(0.4 0.05 45);
+  --sidebar: oklch(0.962 0.014 92);
+  --sidebar-foreground: oklch(0.32 0.035 58);
+  --sidebar-primary: oklch(0.498 0.078 66);
+  --sidebar-primary-foreground: oklch(0.962 0.014 92);
+  --sidebar-accent: oklch(0.925 0.022 88);
+  --sidebar-accent-foreground: oklch(0.32 0.035 58);
+  --sidebar-border: oklch(0.498 0.078 66 / 30%);
+  --sidebar-ring: oklch(0.498 0.078 66 / 50%);
+}
+
+.dark {
+  /* night sketchbook: charcoal desk, chalk-ink lines */
+  --background: oklch(0.24 0.02 70);
+  --foreground: oklch(0.93 0.03 88);
+  --paper: oklch(0.28 0.025 70);
+  --pencil: oklch(0.7 0.02 75);
+  --card: oklch(0.28 0.025 70);
+  --card-foreground: oklch(0.93 0.03 88);
+  --popover: oklch(0.28 0.025 70);
+  --popover-foreground: oklch(0.93 0.03 88);
+  --primary: oklch(0.78 0.075 80);
+  --primary-foreground: oklch(0.24 0.02 70);
+  --secondary: oklch(0.33 0.03 70);
+  --secondary-foreground: oklch(0.93 0.03 88);
+  --muted: oklch(0.33 0.03 70);
+  --muted-foreground: oklch(0.72 0.03 80);
+  --accent: oklch(0.7 0.09 55);
+  --accent-foreground: oklch(0.24 0.02 70);
+  --destructive: oklch(0.704 0.191 22.216);
+  --destructive-foreground: oklch(0.984 0.003 247.858);
+  --border: oklch(0.78 0.075 80 / 25%);
+  --input: oklch(0.78 0.075 80 / 20%);
+  --ring: oklch(0.78 0.075 80 / 45%);
+  --chart-1: oklch(0.78 0.075 80);
+  --chart-2: oklch(0.7 0.09 55);
+  --chart-3: oklch(0.7 0.02 75);
+  --chart-4: oklch(0.63 0.09 80);
+  --chart-5: oklch(0.55 0.05 45);
+  --sidebar: oklch(0.28 0.025 70);
+  --sidebar-foreground: oklch(0.93 0.03 88);
+  --sidebar-primary: oklch(0.78 0.075 80);
+  --sidebar-primary-foreground: oklch(0.24 0.02 70);
+  --sidebar-accent: oklch(0.33 0.03 70);
+  --sidebar-accent-foreground: oklch(0.93 0.03 88);
+  --sidebar-border: oklch(0.78 0.075 80 / 25%);
+  --sidebar-ring: oklch(0.78 0.075 80 / 45%);
+}
+
+@layer base {
+  * {
+    border-color: var(--color-border);
+  }
+
+  body {
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+    /* subtle paper grain */
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='240' height='240' filter='url(%23g)' opacity='0.05'/%3E%3C/svg%3E");
+  }
+
+  ::selection {
+    background-color: color-mix(in oklab, var(--color-primary) 30%, transparent);
+  }
+}
+
+/* Hand-drawn box: wobbly double-corner radius + offset ink shadow */
+@utility sketch-border {
+  border: 2px solid var(--color-primary);
+  border-radius: 255px 15px 225px 15px / 15px 225px 15px 255px;
+  box-shadow: 2px 3px 0 color-mix(in oklab, var(--color-primary) 22%, transparent);
+}
+
+@utility sketch-border-alt {
+  border: 2px solid var(--color-primary);
+  border-radius: 15px 225px 15px 255px / 225px 15px 255px 15px;
+  box-shadow: -2px 3px 0 color-mix(in oklab, var(--color-primary) 22%, transparent);
+}
+
+/* Small irregular pill for tags */
+@utility sketch-chip {
+  border: 1.5px solid var(--color-primary);
+  border-radius: 10px 14px 12px 15px / 14px 10px 15px 12px;
+}
+
+/* Washi tape strip */
+@utility tape-strip {
+  background: oklch(0.72 0.09 58 / 35%);
+  box-shadow: 0 1px 2px oklch(0.32 0.035 58 / 15%);
+  border-left: 1px dashed oklch(0.72 0.09 58 / 60%);
+  border-right: 1px dashed oklch(0.72 0.09 58 / 60%);
+}
+
+/* Faint ruled notebook lines */
+@utility ruled-lines {
+  background-image: repeating-linear-gradient(
+    to bottom,
+    transparent 0px,
+    transparent 31px,
+    color-mix(in oklab, var(--color-primary) 14%, transparent) 31px,
+    color-mix(in oklab, var(--color-primary) 14%, transparent) 32px
+  );
+  background-position: 0 6px;
+}
+
+/* Dashed hand-drawn connector line */
+@utility sketch-line {
+  border-top: 2px dashed color-mix(in oklab, var(--color-primary) 45%, transparent);
+}
