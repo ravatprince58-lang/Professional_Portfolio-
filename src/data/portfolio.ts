@@ -110,19 +110,55 @@ export const journey = [
   },
 ];
 
-export type SkillGroup = {
-  title: string;
-  skills: string[];
+export type Skill = {
+  name: string;
+  highlight?: boolean;
 };
 
-export const skillGroups: SkillGroup[] = [
+export type SkillCategory = {
+  id: "frontend" | "languages" | "gamedev" | "tools";
+  title: string;
+  description: string;
+  skills: Skill[];
+};
+
+export const skillCategories: SkillCategory[] = [
   {
-    title: "Frontend development",
-    skills: ["HTML5", "CSS3", "JavaScript", "React.js", "Tailwind CSS", "Git and GitHub"],
+    id: "frontend",
+    title: "Frontend Development",
+    description: "Building interfaces that run in the browser.",
+    skills: [
+      { name: "React.js", highlight: true },
+      { name: "Tailwind CSS", highlight: true },
+    ],
   },
   {
-    title: "Game development",
-    skills: ["Unity", "C#", "Gameplay scripting", "Game mechanics", "Inventory systems"],
+    id: "languages",
+    title: "Programming Languages",
+    description: "The languages I write day to day.",
+    skills: [
+      { name: "HTML5", highlight: true },
+      { name: "CSS3", highlight: true },
+      { name: "JavaScript", highlight: true },
+      { name: "C#", highlight: true },
+    ],
+  },
+  {
+    id: "gamedev",
+    title: "Game Development",
+    description: "Making playable worlds and the systems behind them.",
+    skills: [
+      { name: "Unity", highlight: true },
+      { name: "Gameplay scripting" },
+      { name: "Game mechanics" },
+      { name: "Inventory systems" },
+    ],
+  },
+  {
+    id: "tools",
+    title: "Tools & Technologies",
+    description: "The tools I use to build, track and share my work.",
+    skills: [{ name: "Git and GitHub" }],
   },
 ];
 
