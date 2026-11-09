@@ -1,34 +1,36 @@
 import { Link } from "@tanstack/react-router";
 import { ArrowRight, Code, ExternalLink, type LucideIcon } from "lucide-react";
 import type { Project } from "@/data/portfolio";
-import { CircleNote } from "./doodles";
+import { cn } from "@/lib/utils";
+import { CircleNote, TapeStrip } from "./doodles";
 import { MarginNote, Tag } from "./paper";
 import { ProjectMedia } from "./project-media";
-import { cn } from "@/lib/utils";
+
+export type CardTreatment = "plain" | "overlap" | "tilt";
 
 export function ProjectCard({
   project,
   category,
   mediaHint,
   number,
+  treatment,
   featured = false,
-  className,
 }: {
   project: Project;
   category: string;
   mediaHint: string;
   number: number;
+  treatment: CardTreatment;
   featured?: boolean;
-  className?: string;
 }) {
+  const tilt = treatment === "tilt" ? 1.2 : 0.4;
+  const direction = number % 2 === 0 ? 1 : -1;
+
   return (
     <article
-      className={cn(
-        "group relative isolate animate-in fade-in slide-in-from-bottom-2 fill-mode-both duration-500 motion-reduce:animate-none",
-        className,
-      )}
+      className="group relative isolate animate-in fade-in slide-in-from-bottom-2 fill-mode-both duration-500 motion-reduce:animate-none"
       style={{
-        rotate: `${number % 2 === 0 ? 0.4 : -0.4}deg`,
+        rotate: `${direction * tilt}deg`,
         animationDelay: `${(number - 1) * 90}ms`,
       }}
     >
@@ -36,23 +38,26 @@ export function ProjectCard({
         aria-hidden="true"
         className="sketch-border-alt absolute inset-0 -z-10 translate-x-2 translate-y-2 bg-secondary/60 transition-transform duration-300 ease-out group-hover:translate-x-3 group-hover:translate-y-3 motion-reduce:transition-none"
       />
-      <div
-        className={cn(
-          "sketch-border relative h-full bg-card p-3 transition-transform duration-300 ease-out hover:-translate-y-1 md:p-4 motion-reduce:transition-none motion-reduce:hover:translate-y-0",
-          featured
-            ? "md:grid md:grid-cols-12 md:items-center md:gap-8 md:p-6"
-            : "flex flex-col gap-5",
+      <div className="sketch-border relative flex h-full flex-col bg-card p-3 transition-transform duration-300 ease-out hover:-translate-y-1 md:p-4 motion-reduce:transition-none motion-reduce:hover:translate-y-0">
+        {treatment === "tilt" && (
+          <>
+            <TapeStrip className="-top-3 left-8 h-5 w-20 -rotate-6" />
+            <TapeStrip className="-top-3 right-8 h-5 w-20 rotate-4" />
+          </>
         )}
-      >
-        <div className={cn(featured && "md:col-span-7")}>
-          <ProjectMedia
-            project={project}
-            number={number}
-            featured={featured}
-            placeholderHint={mediaHint}
-          />
-        </div>
-        <div className={cn(featured && "md:col-span-5")}>
+        <ProjectMedia
+          project={project}
+          number={number}
+          featured={featured}
+          placeholderHint={mediaHint}
+        />
+        <div
+          className={cn(
+            "flex flex-1 flex-col",
+            treatment === "overlap" &&
+              "relative z-10 -mt-12 mx-2 bg-card p-4 sketch-border-alt md:mx-3 md:p-5",
+          )}
+        >
           <ProjectDetails project={project} category={category} featured={featured} />
         </div>
       </div>
@@ -70,13 +75,13 @@ function ProjectDetails({
   featured: boolean;
 }) {
   return (
-    <div className="flex min-w-0 flex-col gap-4 px-2 pb-2 md:px-3 md:pb-3">
+    <div className="flex flex-1 flex-col gap-4 px-2 pb-2 pt-5 md:px-3 md:pb-3">
       <div>
         <p className="font-display text-sm uppercase tracking-[0.2em] text-primary">{category}</p>
         <h3
           className={cn(
             "mt-1 font-display uppercase leading-[1.02] tracking-wide",
-            featured ? "text-4xl md:text-5xl" : "text-3xl",
+            featured ? "text-4xl md:text-5xl" : "text-3xl md:text-4xl",
           )}
         >
           <Link
@@ -94,14 +99,7 @@ function ProjectDetails({
         )}
       </div>
 
-      <p
-        className={cn(
-          "leading-relaxed text-muted-foreground",
-          featured ? "text-base md:text-lg" : "text-sm md:text-base",
-        )}
-      >
-        {project.blurb}
-      </p>
+      <p className="leading-relaxed text-muted-foreground md:text-lg">{project.blurb}</p>
       {project.note && <MarginNote className="text-lg">{project.note}</MarginNote>}
 
       <div>

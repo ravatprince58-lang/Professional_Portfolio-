@@ -68,7 +68,7 @@ export function ProjectMedia({
       {featured && (
         <span
           className={cn(
-            "absolute bottom-3 right-3 bg-card/90 px-2 py-0.5 font-hand text-lg leading-tight text-primary",
+            "absolute right-3 top-3 bg-card/90 px-2 py-0.5 font-hand text-lg leading-tight text-primary",
           )}
         >
           featured
