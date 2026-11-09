@@ -34,12 +34,20 @@ function restCardSpan(restIndex: number, restCount: number) {
   );
 }
 
-function ProjectsPage() {
-  const sections = [
-    { title: "Frontend development", projects: frontendProjects },
-    { title: "Game development", projects: gameProjects },
-  ];
+const SECTIONS = [
+  {
+    title: "Frontend development",
+    projects: frontendProjects,
+    mediaHint: "[add website screenshot, 16:9]",
+  },
+  {
+    title: "Game development",
+    projects: gameProjects,
+    mediaHint: "[add gameplay image or video, 16:9]",
+  },
+];
 
+function ProjectsPage() {
   return (
     <main className="mx-auto max-w-5xl px-4 pb-20 pt-10 md:pt-14">
       <header>
@@ -51,7 +59,7 @@ function ProjectsPage() {
         </p>
       </header>
 
-      {sections.map((section) => {
+      {SECTIONS.map((section) => {
         const [featured, ...rest] = section.projects;
         return (
           <section key={section.title} className="mt-16">
@@ -69,8 +77,9 @@ function ProjectsPage() {
                 <ProjectCard
                   project={featured}
                   category={section.title}
+                  mediaHint={section.mediaHint}
                   number={1}
-                  variant="featured"
+                  featured
                   className="md:col-span-2 lg:col-span-6"
                 />
               )}
@@ -79,9 +88,8 @@ function ProjectsPage() {
                   key={p.slug}
                   project={p}
                   category={section.title}
+                  mediaHint={section.mediaHint}
                   number={r + 2}
-                  variant={r < 2 ? "wide" : "compact"}
-                  flip={r % 2 === 1}
                   className={restCardSpan(r, rest.length)}
                 />
               ))}

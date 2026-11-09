@@ -3,34 +3,22 @@ import { ArrowRight, Code, ExternalLink, type LucideIcon } from "lucide-react";
 import type { Project } from "@/data/portfolio";
 import { CircleNote } from "./doodles";
 import { MarginNote, Tag } from "./paper";
-import { ProjectCover, type CardVariant } from "./project-cover";
+import { ProjectMedia } from "./project-media";
 import { cn } from "@/lib/utils";
-
-const LAYOUT: Record<CardVariant, string> = {
-  featured: "md:grid-cols-[minmax(0,5fr)_minmax(0,7fr)]",
-  wide: "lg:grid-cols-[minmax(0,2fr)_minmax(0,3fr)]",
-  compact: "",
-};
-
-const TITLE_SIZE: Record<CardVariant, string> = {
-  featured: "text-4xl md:text-6xl",
-  wide: "text-3xl md:text-4xl",
-  compact: "text-3xl",
-};
 
 export function ProjectCard({
   project,
   category,
+  mediaHint,
   number,
-  variant,
-  flip = false,
+  featured = false,
   className,
 }: {
   project: Project;
   category: string;
+  mediaHint: string;
   number: number;
-  variant: CardVariant;
-  flip?: boolean;
+  featured?: boolean;
   className?: string;
 }) {
   return (
@@ -50,31 +38,46 @@ export function ProjectCard({
       />
       <div
         className={cn(
-          "sketch-border relative grid h-full grid-cols-1 gap-5 bg-card p-4 transition-transform duration-300 ease-out hover:-translate-y-1 md:p-5 motion-reduce:transition-none motion-reduce:hover:translate-y-0",
-          LAYOUT[variant],
-          variant === "featured" && "md:gap-8 md:p-7",
-          variant === "wide" && "lg:gap-6",
+          "sketch-border relative h-full bg-card p-3 transition-transform duration-300 ease-out hover:-translate-y-1 md:p-4 motion-reduce:transition-none motion-reduce:hover:translate-y-0",
+          featured
+            ? "md:grid md:grid-cols-12 md:items-center md:gap-8 md:p-6"
+            : "flex flex-col gap-5",
         )}
       >
-        <ProjectCover
-          title={project.title}
-          category={category}
-          number={number}
-          variant={variant}
-          flip={flip}
-        />
-        <ProjectDetails project={project} variant={variant} />
+        <div className={cn(featured && "md:col-span-7")}>
+          <ProjectMedia
+            project={project}
+            number={number}
+            featured={featured}
+            placeholderHint={mediaHint}
+          />
+        </div>
+        <div className={cn(featured && "md:col-span-5")}>
+          <ProjectDetails project={project} category={category} featured={featured} />
+        </div>
       </div>
     </article>
   );
 }
 
-function ProjectDetails({ project, variant }: { project: Project; variant: CardVariant }) {
+function ProjectDetails({
+  project,
+  category,
+  featured,
+}: {
+  project: Project;
+  category: string;
+  featured: boolean;
+}) {
   return (
-    <div className="flex min-w-0 flex-col gap-4 md:py-1">
+    <div className="flex min-w-0 flex-col gap-4 px-2 pb-2 md:px-3 md:pb-3">
       <div>
+        <p className="font-display text-sm uppercase tracking-[0.2em] text-primary">{category}</p>
         <h3
-          className={cn("font-display uppercase leading-[1.02] tracking-wide", TITLE_SIZE[variant])}
+          className={cn(
+            "mt-1 font-display uppercase leading-[1.02] tracking-wide",
+            featured ? "text-4xl md:text-5xl" : "text-3xl",
+          )}
         >
           <Link
             to="/projects/$slug"
@@ -94,7 +97,7 @@ function ProjectDetails({ project, variant }: { project: Project; variant: CardV
       <p
         className={cn(
           "leading-relaxed text-muted-foreground",
-          variant === "featured" ? "text-base md:text-lg" : "text-sm md:text-base",
+          featured ? "text-base md:text-lg" : "text-sm md:text-base",
         )}
       >
         {project.blurb}
@@ -152,7 +155,7 @@ function ProjectLink({
 }) {
   if (!href) {
     return (
-      <span className="inline-flex items-center gap-2 border border-dashed border-primary/40 px-3 py-1.5 font-hand text-base text-pencil">
+      <span className="inline-flex items-center border border-dashed border-primary/40 px-3 py-1.5 font-hand text-base text-pencil">
         [add {label.toLowerCase()} link]
       </span>
     );
