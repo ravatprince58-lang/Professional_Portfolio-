@@ -25,16 +25,18 @@ export function ContactForm() {
 
   const onSubmit = async (values: ContactValues) => {
     setStatus({ kind: "idle" });
-    const { error } = await supabase.from("contact_messages").insert({
-      name: values.name,
-      email: values.email,
-      subject: values.subject,
-      message: values.message,
+    const { data, error } = await supabase.functions.invoke<{ ok?: boolean }>("contact-notify", {
+      body: {
+        name: values.name,
+        email: values.email,
+        subject: values.subject,
+        message: values.message,
+      },
     });
-    if (error) {
+    if (error || data?.ok !== true) {
       setStatus({
         kind: "error",
-        message: "Your message was not sent. Please check your connection and try again.",
+        message: "Your message was not sent. Please try again in a moment.",
       });
       return;
     }
