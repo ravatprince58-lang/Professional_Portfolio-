@@ -2,7 +2,7 @@ import type { ReactNode } from "react";
 import { render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 import type { Project } from "@/data/portfolio";
-import { ProjectCard, type CardTreatment } from "@/components/project-card";
+import { ProjectCard } from "@/components/project-card";
 
 vi.mock("@tanstack/react-router", () => ({
   Link: ({
@@ -40,18 +40,13 @@ const withoutMedia: Project = {
 const FRONTEND_HINT = "[add website screenshot, 16:9]";
 const GAME_HINT = "[add gameplay image or video, 16:9]";
 
-function renderCard(
-  project: Project,
-  options: { treatment?: CardTreatment; featured?: boolean; hint?: string } = {},
-) {
+function renderCard(project: Project, options: { hint?: string } = {}) {
   return render(
     <ProjectCard
       project={project}
       category={project.image ? "Frontend development" : "Game development"}
       mediaHint={options.hint ?? (project.image ? FRONTEND_HINT : GAME_HINT)}
       number={2}
-      treatment={options.treatment ?? "plain"}
-      featured={options.featured ?? false}
     />,
   );
 }
@@ -64,8 +59,17 @@ describe("project showcase card", () => {
     expect(img.parentElement).toHaveClass("aspect-video");
   });
 
+  it("uses the same 16:9 cover frame for projects with and without media", () => {
+    const { container, unmount } = renderCard(withMedia);
+    expect(container.querySelector(".aspect-video")).not.toBeNull();
+    unmount();
+
+    const placeholder = renderCard(withoutMedia);
+    expect(placeholder.container.querySelector(".aspect-video")).not.toBeNull();
+  });
+
   it("shows a clearly marked placeholder when no media exists", () => {
-    renderCard(withoutMedia, { featured: true });
+    renderCard(withoutMedia);
     expect(
       screen.getByRole("img", { name: "Placeholder for Demo Game media" }),
     ).toBeInTheDocument();
@@ -99,30 +103,15 @@ describe("project showcase card", () => {
     expect(screen.getByText("[add technologies used]")).toBeInTheDocument();
   });
 
-  it("labels only featured cards", () => {
-    const { unmount } = renderCard(withMedia, { featured: true });
-    expect(screen.getByText("featured")).toBeInTheDocument();
+  it("shows a play button only when a video is linked", () => {
+    const { unmount } = renderCard({ ...withMedia, videoUrl: "https://video.example.com/demo" });
+    expect(screen.getByRole("link", { name: "Watch the Demo Site video" })).toHaveAttribute(
+      "href",
+      "https://video.example.com/demo",
+    );
     unmount();
 
     renderCard(withMedia);
-    expect(screen.queryByText("featured")).toBeNull();
-  });
-
-  it("puts the details panel over the media only in the overlap treatment", () => {
-    const { container, unmount } = renderCard(withMedia, { treatment: "overlap" });
-    expect(container.querySelector(".-mt-12")).not.toBeNull();
-    unmount();
-
-    const plain = renderCard(withMedia);
-    expect(plain.container.querySelector(".-mt-12")).toBeNull();
-  });
-
-  it("adds tape strips only in the tilt treatment", () => {
-    const { container, unmount } = renderCard(withMedia, { treatment: "tilt" });
-    expect(container.querySelectorAll(".tape-strip").length).toBeGreaterThan(1);
-    unmount();
-
-    const plain = renderCard(withMedia);
-    expect(plain.container.querySelectorAll(".tape-strip")).toHaveLength(1);
+    expect(screen.queryByRole("link", { name: /Watch the/ })).toBeNull();
   });
 });

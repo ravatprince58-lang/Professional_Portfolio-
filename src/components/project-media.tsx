@@ -1,7 +1,5 @@
 import { Play } from "lucide-react";
 import type { Project } from "@/data/portfolio";
-import { cn } from "@/lib/utils";
-import { TapeStrip } from "./doodles";
 
 const SKIPPED_WORDS = new Set(["the", "a", "an", "of", "and"]);
 
@@ -18,30 +16,22 @@ function monogram(title: string) {
 }
 
 /**
- * Project cover: the project's own screenshot when one is set, otherwise a
- * clearly marked placeholder. A play button appears when a video is linked.
+ * Project cover at a fixed 16:9 ratio: the project's own screenshot when one is
+ * set, otherwise a clearly marked placeholder. A play button appears when a
+ * video is linked.
  */
 export function ProjectMedia({
   project,
   number,
-  featured,
   placeholderHint,
-  fill = false,
 }: {
   project: Project;
   number: number;
-  featured: boolean;
   placeholderHint: string;
-  fill?: boolean;
 }) {
   return (
-    <div className={cn("relative", fill && "h-full")}>
-      <div
-        className={cn(
-          "relative overflow-hidden border border-primary/30 bg-secondary/50",
-          fill ? "h-full min-h-64" : "aspect-video",
-        )}
-      >
+    <div className="relative">
+      <div className="relative aspect-video overflow-hidden border border-primary/30 bg-secondary/50">
         {project.image ? (
           <img
             src={project.image}
@@ -82,15 +72,9 @@ export function ProjectMedia({
           </a>
         )}
       </div>
-      <TapeStrip className="right-6 top-[-8px] h-5 w-16 rotate-6" />
       <span className="absolute left-3 top-3 bg-card/90 px-2 py-0.5 font-hand text-lg leading-tight text-pencil">
         No. {String(number).padStart(2, "0")}
       </span>
-      {featured && (
-        <span className="absolute right-3 top-3 bg-card/90 px-2 py-0.5 font-hand text-lg leading-tight text-primary">
-          featured
-        </span>
-      )}
     </div>
   );
 }

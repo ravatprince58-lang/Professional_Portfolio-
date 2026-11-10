@@ -3,7 +3,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { frontendProjects, gameProjects, projects, type Project } from "@/data/portfolio";
 import { MarginNote } from "@/components/paper";
 import { Squiggle } from "@/components/doodles";
-import { ProjectCard, type CardTreatment } from "@/components/project-card";
+import { ProjectCard } from "@/components/project-card";
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/projects")({
@@ -26,8 +26,6 @@ export const Route = createFileRoute("/projects")({
   }),
   component: ProjectsPage,
 });
-
-const CARD_TREATMENTS: CardTreatment[] = ["plain", "overlap", "tilt"];
 
 type FilterId = "all" | "frontend" | "game";
 
@@ -58,20 +56,15 @@ const FILTERS: { id: FilterId; label: string }[] = [
 ];
 
 function countFor(filter: FilterId) {
-  return filter === "all"
-    ? projects.length
-    : (SECTIONS.find((s) => s.id === filter)?.projects.length ?? 0);
+  if (filter === "all") return projects.length;
+  return SECTIONS.find((s) => s.id === filter)?.projects.length ?? 0;
 }
 
 function ProjectsPage() {
   const [filter, setFilter] = useState<FilterId>("all");
 
-  const visible = SECTIONS.filter((s) => filter === "all" || s.id === filter);
-  const featured = visible.flatMap((section) =>
-    section.projects.slice(0, 1).map((project) => ({ section, project })),
-  );
-  const more = visible.flatMap((section) =>
-    section.projects.slice(1).map((project) => ({ section, project })),
+  const visible = SECTIONS.filter((s) => filter === "all" || s.id === filter).flatMap((section) =>
+    section.projects.map((project) => ({ section, project })),
   );
 
   return (
@@ -110,53 +103,17 @@ function ProjectsPage() {
         </div>
       </header>
 
-      {featured.length > 0 && (
-        <section
-          className="mt-12 grid grid-cols-1 gap-12 md:grid-cols-2"
-          aria-label="Featured projects"
-        >
-          {featured.map(({ section, project }) => (
-            <ProjectCard
-              key={project.slug}
-              project={project}
-              category={section.title}
-              mediaHint={section.mediaHint}
-              number={projects.indexOf(project) + 1}
-              treatment="plain"
-              featured
-            />
-          ))}
-        </section>
-      )}
-
-      {more.length > 0 && (
-        <section className="mt-16">
-          <div className="sketch-line flex flex-wrap items-end justify-between gap-3 pt-5">
-            <h2 className="font-display text-3xl uppercase tracking-wide text-primary">
-              More projects
-            </h2>
-            <MarginNote className="text-lg">
-              {more.length} {more.length === 1 ? "project" : "projects"}
-            </MarginNote>
-          </div>
-
-          <div className="mt-10 grid grid-cols-1 gap-x-8 gap-y-14 md:grid-cols-2">
-            {more.map(({ section, project }) => {
-              const number = projects.indexOf(project) + 1;
-              return (
-                <ProjectCard
-                  key={project.slug}
-                  project={project}
-                  category={section.title}
-                  mediaHint={section.mediaHint}
-                  number={number}
-                  treatment={CARD_TREATMENTS[(number - 1) % CARD_TREATMENTS.length]!}
-                />
-              );
-            })}
-          </div>
-        </section>
-      )}
+      <section className="mt-12 grid grid-cols-1 gap-x-8 gap-y-12 md:grid-cols-2">
+        {visible.map(({ section, project }, index) => (
+          <ProjectCard
+            key={project.slug}
+            project={project}
+            category={section.title}
+            mediaHint={section.mediaHint}
+            number={index + 1}
+          />
+        ))}
+      </section>
     </main>
   );
 }

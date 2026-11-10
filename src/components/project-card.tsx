@@ -2,101 +2,53 @@ import { Link } from "@tanstack/react-router";
 import { ArrowRight, Code, ExternalLink, type LucideIcon } from "lucide-react";
 import type { Project } from "@/data/portfolio";
 import { cn } from "@/lib/utils";
-import { CircleNote, TapeStrip } from "./doodles";
-import { MarginNote, Tag } from "./paper";
+import { TapeStrip } from "./doodles";
+import { Tag } from "./paper";
 import { ProjectMedia } from "./project-media";
 
-export type CardTreatment = "plain" | "overlap" | "tilt";
+const MAX_CARD_TAGS = 3;
 
-/** A featured card spans the full row with its cover beside the details. */
+/** Every card shares one size, padding and layout so the grid lines up. */
 export function ProjectCard({
   project,
   category,
   mediaHint,
   number,
-  treatment,
-  featured = false,
 }: {
   project: Project;
   category: string;
   mediaHint: string;
   number: number;
-  treatment: CardTreatment;
-  featured?: boolean;
 }) {
-  const effective: CardTreatment = featured ? "plain" : treatment;
-  const tilt = effective === "tilt" ? 1.2 : 0.4;
-  const direction = number % 2 === 0 ? 1 : -1;
-
   return (
     <article
-      className={cn(
-        "group relative isolate animate-in fade-in slide-in-from-bottom-2 fill-mode-both duration-500 motion-reduce:animate-none",
-        featured && "md:col-span-2",
-      )}
-      style={{
-        rotate: featured ? "0deg" : `${direction * tilt}deg`,
-        animationDelay: `${(number - 1) * 90}ms`,
-      }}
+      className="group relative isolate flex h-full animate-in fade-in slide-in-from-bottom-2 fill-mode-both duration-500 motion-reduce:animate-none"
+      style={{ animationDelay: `${(number - 1) * 90}ms` }}
     >
       <div
         aria-hidden="true"
         className="sketch-border-alt absolute inset-0 -z-10 translate-x-2 translate-y-2 bg-secondary/60 transition-transform duration-300 ease-out group-hover:translate-x-3 group-hover:translate-y-3 motion-reduce:transition-none"
       />
-      <div
-        className={cn(
-          "sketch-border relative flex h-full flex-col bg-card p-3 transition-transform duration-300 ease-out hover:-translate-y-1 md:p-4 motion-reduce:transition-none motion-reduce:hover:translate-y-0",
-          featured && "md:flex-row md:items-stretch md:gap-6 md:p-5",
-        )}
-      >
-        {effective === "tilt" && (
-          <>
-            <TapeStrip className="-top-3 left-8 h-5 w-20 -rotate-6" />
-            <TapeStrip className="-top-3 right-8 h-5 w-20 rotate-4" />
-          </>
-        )}
-        <div className={cn(featured && "md:w-[52%] md:shrink-0")}>
-          <ProjectMedia
-            project={project}
-            number={number}
-            featured={featured}
-            placeholderHint={mediaHint}
-            fill={featured}
-          />
-        </div>
-        <div
-          className={cn(
-            "flex flex-1 flex-col",
-            effective === "overlap" &&
-              "relative z-10 -mt-12 mx-2 bg-card p-4 sketch-border-alt md:mx-3 md:p-5",
-          )}
-        >
-          <ProjectDetails project={project} category={category} featured={featured} />
-        </div>
+      <div className="sketch-border relative flex w-full flex-col bg-card p-3 transition-transform duration-300 ease-out hover:-translate-y-1 md:p-4 motion-reduce:transition-none motion-reduce:hover:translate-y-0">
+        <TapeStrip className="right-6 -top-3 h-5 w-16 rotate-6" />
+        <ProjectMedia project={project} number={number} placeholderHint={mediaHint} />
+        <ProjectDetails project={project} category={category} />
       </div>
     </article>
   );
 }
 
-function ProjectDetails({
-  project,
-  category,
-  featured,
-}: {
-  project: Project;
-  category: string;
-  featured: boolean;
-}) {
+function ProjectDetails({ project, category }: { project: Project; category: string }) {
+  const tags = project.tags?.slice(0, MAX_CARD_TAGS);
+
   return (
-    <div className="flex flex-1 flex-col gap-4 px-2 pb-2 pt-5 md:px-3 md:pb-3 md:pt-0">
-      <div>
-        <p className="font-display text-sm uppercase tracking-[0.2em] text-primary">{category}</p>
-        <h3
-          className={cn(
-            "mt-1 font-display uppercase leading-[1.02] tracking-wide",
-            featured ? "text-4xl md:text-5xl" : "text-3xl md:text-4xl",
-          )}
-        >
+    <div className="flex flex-1 flex-col gap-4 px-2 pb-2 pt-5 md:px-3 md:pb-3">
+      <div className="min-w-0">
+        <p className="truncate font-display text-sm uppercase tracking-[0.2em] text-primary">
+          {category}
+          {project.status ? ` · ${project.status}` : ""}
+        </p>
+        <h3 className="mt-1 truncate font-display text-4xl uppercase leading-[1.02] tracking-wide">
           <Link
             to="/projects/$slug"
             params={{ slug: project.slug }}
@@ -105,41 +57,39 @@ function ProjectDetails({
             {project.title}
           </Link>
         </h3>
-        {project.status && (
-          <MarginNote className="mt-2 inline-block text-lg">
-            <CircleNote className="text-primary">{project.status}</CircleNote>
-          </MarginNote>
-        )}
       </div>
 
-      <p className="leading-relaxed text-muted-foreground md:text-lg">{project.blurb}</p>
-      {project.note && <MarginNote className="text-lg">{project.note}</MarginNote>}
+      <p className="line-clamp-3 min-h-[5rem] leading-relaxed text-muted-foreground">
+        {project.blurb}
+      </p>
 
-      <div>
+      <div className="min-h-[4.5rem]">
         <p className="font-display text-xs uppercase tracking-[0.2em] text-muted-foreground">
           Technologies
         </p>
-        {project.tags ? (
+        {tags ? (
           <div className="mt-2 flex flex-wrap gap-1.5">
-            {project.tags.map((t) => (
+            {tags.map((t) => (
               <Tag key={t}>{t}</Tag>
             ))}
           </div>
         ) : (
-          <MarginNote className="mt-1 text-lg">[add technologies used]</MarginNote>
+          <p className="mt-1 font-hand text-lg leading-tight text-pencil">
+            [add technologies used]
+          </p>
         )}
       </div>
 
-      <div className="sketch-line mt-auto flex flex-wrap items-center justify-between gap-x-4 gap-y-3 pt-4">
+      <div className="sketch-line mt-auto flex flex-col gap-3 pt-4">
         <Link
           to="/projects/$slug"
           params={{ slug: project.slug }}
-          className="group/link inline-flex items-center gap-1.5 font-display text-sm uppercase tracking-[0.2em] text-primary"
+          className="group/link inline-flex items-center gap-1.5 self-start font-display text-sm uppercase tracking-[0.2em] text-primary"
         >
           View details
           <ArrowRight className="h-4 w-4 transition-transform duration-200 group-hover/link:translate-x-1 motion-reduce:transition-none" />
         </Link>
-        <div className="flex flex-wrap gap-2">
+        <div className="grid grid-cols-2 gap-2">
           <ProjectLink href={project.githubUrl} label="GitHub" icon={Code} variant="outline" />
           <ProjectLink
             href={project.liveUrl}
@@ -166,7 +116,7 @@ function ProjectLink({
 }) {
   if (!href) {
     return (
-      <span className="inline-flex items-center border border-dashed border-primary/40 px-3 py-1.5 font-hand text-base text-pencil">
+      <span className="flex h-11 items-center justify-center border border-dashed border-primary/40 px-2 text-center font-hand text-base leading-tight text-pencil">
         [add {label.toLowerCase()} link]
       </span>
     );
@@ -177,13 +127,13 @@ function ProjectLink({
       target="_blank"
       rel="noopener noreferrer"
       className={cn(
-        "inline-flex items-center gap-2 px-3.5 py-2 font-display text-sm uppercase tracking-widest transition-all duration-150 hover:-translate-y-0.5 motion-reduce:transition-none motion-reduce:hover:translate-y-0",
+        "inline-flex h-11 items-center justify-center gap-2 px-3 font-display text-sm uppercase tracking-widest transition-all duration-150 hover:-translate-y-0.5 motion-reduce:transition-none motion-reduce:hover:translate-y-0",
         variant === "solid"
           ? "sketch-border bg-primary text-primary-foreground hover:bg-primary/90"
           : "sketch-border-alt bg-card text-foreground hover:bg-secondary",
       )}
     >
-      <Icon className="h-4 w-4" aria-hidden="true" />
+      <Icon className="h-4 w-4 shrink-0" aria-hidden="true" />
       {label}
     </a>
   );
