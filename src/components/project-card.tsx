@@ -8,6 +8,7 @@ import { ProjectMedia } from "./project-media";
 
 export type CardTreatment = "plain" | "overlap" | "tilt";
 
+/** A featured card spans the full row with its cover beside the details. */
 export function ProjectCard({
   project,
   category,
@@ -23,14 +24,18 @@ export function ProjectCard({
   treatment: CardTreatment;
   featured?: boolean;
 }) {
-  const tilt = treatment === "tilt" ? 1.2 : 0.4;
+  const effective: CardTreatment = featured ? "plain" : treatment;
+  const tilt = effective === "tilt" ? 1.2 : 0.4;
   const direction = number % 2 === 0 ? 1 : -1;
 
   return (
     <article
-      className="group relative isolate animate-in fade-in slide-in-from-bottom-2 fill-mode-both duration-500 motion-reduce:animate-none"
+      className={cn(
+        "group relative isolate animate-in fade-in slide-in-from-bottom-2 fill-mode-both duration-500 motion-reduce:animate-none",
+        featured && "md:col-span-2",
+      )}
       style={{
-        rotate: `${direction * tilt}deg`,
+        rotate: featured ? "0deg" : `${direction * tilt}deg`,
         animationDelay: `${(number - 1) * 90}ms`,
       }}
     >
@@ -38,23 +43,31 @@ export function ProjectCard({
         aria-hidden="true"
         className="sketch-border-alt absolute inset-0 -z-10 translate-x-2 translate-y-2 bg-secondary/60 transition-transform duration-300 ease-out group-hover:translate-x-3 group-hover:translate-y-3 motion-reduce:transition-none"
       />
-      <div className="sketch-border relative flex h-full flex-col bg-card p-3 transition-transform duration-300 ease-out hover:-translate-y-1 md:p-4 motion-reduce:transition-none motion-reduce:hover:translate-y-0">
-        {treatment === "tilt" && (
+      <div
+        className={cn(
+          "sketch-border relative flex h-full flex-col bg-card p-3 transition-transform duration-300 ease-out hover:-translate-y-1 md:p-4 motion-reduce:transition-none motion-reduce:hover:translate-y-0",
+          featured && "md:flex-row md:items-stretch md:gap-6 md:p-5",
+        )}
+      >
+        {effective === "tilt" && (
           <>
             <TapeStrip className="-top-3 left-8 h-5 w-20 -rotate-6" />
             <TapeStrip className="-top-3 right-8 h-5 w-20 rotate-4" />
           </>
         )}
-        <ProjectMedia
-          project={project}
-          number={number}
-          featured={featured}
-          placeholderHint={mediaHint}
-        />
+        <div className={cn(featured && "md:w-[52%] md:shrink-0")}>
+          <ProjectMedia
+            project={project}
+            number={number}
+            featured={featured}
+            placeholderHint={mediaHint}
+            fill={featured}
+          />
+        </div>
         <div
           className={cn(
             "flex flex-1 flex-col",
-            treatment === "overlap" &&
+            effective === "overlap" &&
               "relative z-10 -mt-12 mx-2 bg-card p-4 sketch-border-alt md:mx-3 md:p-5",
           )}
         >
@@ -75,7 +88,7 @@ function ProjectDetails({
   featured: boolean;
 }) {
   return (
-    <div className="flex flex-1 flex-col gap-4 px-2 pb-2 pt-5 md:px-3 md:pb-3">
+    <div className="flex flex-1 flex-col gap-4 px-2 pb-2 pt-5 md:px-3 md:pb-3 md:pt-0">
       <div>
         <p className="font-display text-sm uppercase tracking-[0.2em] text-primary">{category}</p>
         <h3

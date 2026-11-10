@@ -1,3 +1,4 @@
+import { Play } from "lucide-react";
 import type { Project } from "@/data/portfolio";
 import { cn } from "@/lib/utils";
 import { TapeStrip } from "./doodles";
@@ -17,23 +18,30 @@ function monogram(title: string) {
 }
 
 /**
- * 16:9 project preview: the project's own image when one is set, otherwise a
- * clearly marked placeholder that says what media to add.
+ * Project cover: the project's own screenshot when one is set, otherwise a
+ * clearly marked placeholder. A play button appears when a video is linked.
  */
 export function ProjectMedia({
   project,
   number,
   featured,
   placeholderHint,
+  fill = false,
 }: {
   project: Project;
   number: number;
   featured: boolean;
   placeholderHint: string;
+  fill?: boolean;
 }) {
   return (
-    <div className="relative">
-      <div className="relative aspect-video overflow-hidden border border-primary/30 bg-secondary/50">
+    <div className={cn("relative", fill && "h-full")}>
+      <div
+        className={cn(
+          "relative overflow-hidden border border-primary/30 bg-secondary/50",
+          fill ? "h-full min-h-64" : "aspect-video",
+        )}
+      >
         {project.image ? (
           <img
             src={project.image}
@@ -60,17 +68,26 @@ export function ProjectMedia({
             </span>
           </div>
         )}
+        {project.videoUrl && (
+          <a
+            href={project.videoUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label={`Watch the ${project.title} video`}
+            className="group/play absolute inset-0 flex items-center justify-center bg-foreground/0 transition-colors duration-300 hover:bg-foreground/15 motion-reduce:transition-none"
+          >
+            <span className="flex h-16 w-16 items-center justify-center rounded-full border-2 border-primary bg-card text-primary shadow-md transition-transform duration-300 group-hover/play:scale-110 motion-reduce:transition-none motion-reduce:group-hover/play:scale-100">
+              <Play className="ml-1 h-7 w-7 fill-current" aria-hidden="true" />
+            </span>
+          </a>
+        )}
       </div>
       <TapeStrip className="right-6 top-[-8px] h-5 w-16 rotate-6" />
       <span className="absolute left-3 top-3 bg-card/90 px-2 py-0.5 font-hand text-lg leading-tight text-pencil">
         No. {String(number).padStart(2, "0")}
       </span>
       {featured && (
-        <span
-          className={cn(
-            "absolute right-3 top-3 bg-card/90 px-2 py-0.5 font-hand text-lg leading-tight text-primary",
-          )}
-        >
+        <span className="absolute right-3 top-3 bg-card/90 px-2 py-0.5 font-hand text-lg leading-tight text-primary">
           featured
         </span>
       )}

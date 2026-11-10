@@ -27,6 +27,7 @@ export type Project = {
   note?: string;
   githubUrl?: string;
   liveUrl?: string;
+  videoUrl?: string;
 };
 
 /** Frontend development projects. */
