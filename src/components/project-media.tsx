@@ -24,14 +24,20 @@ export function ProjectMedia({
   project,
   number,
   placeholderHint,
+  featured = false,
 }: {
   project: Project;
   number: number;
   placeholderHint: string;
+  featured?: boolean;
 }) {
   return (
     <div className="relative">
-      <div className="relative aspect-video overflow-hidden border border-primary/30 bg-secondary/50">
+      <div
+        className={`relative aspect-video overflow-hidden border border-primary/30 bg-secondary/50 ${
+          featured ? "rounded-sm" : ""
+        }`}
+      >
         {project.image ? (
           <img
             src={project.image}

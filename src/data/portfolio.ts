@@ -35,7 +35,9 @@ export const frontendProjects: Project[] = [
   {
     slug: "personal-portfolio",
     title: "Personal Portfolio",
-    blurb: "A personal portfolio presenting my frontend and game development work.",
+    blurb:
+      "A personal portfolio presenting my frontend and game development work, built with a hand-drawn notebook aesthetic.",
+    tags: ["React", "TypeScript", "Tailwind"],
   },
   {
     slug: "soulcare",

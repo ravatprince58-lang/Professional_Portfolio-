@@ -3,6 +3,7 @@ import { render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 import type { Project } from "@/data/portfolio";
 import { ProjectCard } from "@/components/project-card";
+import { FeaturedProjectCard } from "@/components/featured-project-card";
 
 vi.mock("@tanstack/react-router", () => ({
   Link: ({
@@ -113,5 +114,26 @@ describe("project showcase card", () => {
 
     renderCard(withMedia);
     expect(screen.queryByRole("link", { name: /Watch the/ })).toBeNull();
+  });
+
+  it("renders the large featured showcase with the same 16:9 cover", () => {
+    const { container } = render(
+      <FeaturedProjectCard
+        project={withMedia}
+        category="Frontend development"
+        mediaHint={FRONTEND_HINT}
+        number={1}
+      />,
+    );
+    expect(container.querySelector(".aspect-video")).not.toBeNull();
+    expect(screen.getByRole("img", { name: "Preview of Demo Site" })).toHaveAttribute(
+      "src",
+      "/demo-site.png",
+    );
+    expect(screen.getByText("React")).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: /Live demo/ })).toHaveAttribute(
+      "href",
+      "https://demo.example.com",
+    );
   });
 });
